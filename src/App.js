@@ -14,6 +14,7 @@ function App() {
   return (
     <div>
       <h1>"이현걸입니다."</h1>
+      <h2>토스뱅크 입사를 희망합니다.</h2>
       <Potato />
     </div>
   )
