@@ -1,64 +1,50 @@
+// import { current } from 'immer';
 import React from 'react';
-import PropTypes from 'prop-types'
-// import Potato from './potato'; //  ./ 는 현재파일이 있는 폴더라는 뜻이다.
+import axios from 'axios' //axios를 활용한 API 호출
+import Movie from './Movie'
+import './app.css'
 
-function Food({ name, picture, rating }) {
-  // console.log(name)
-  return (
-    <div>
-      {/* props.fav로 입력해도 된다. */}
-      <h3>안녕하세요. 말하는 {name} 입니다.</h3>
-      <h4>평점은 {rating}점 입니다.</h4>
-      <img src={picture} alt={name} />
-    </div>
-  )
-}
-const FighterILike = [
-  // 리스트의 각 원소는 유일한 key props를 가져야하기 때문에 id를 추가한다.
-  // 또한 key 값은 리액트 내부에서 사용되는 특수한 props이기 때문에 Food 컴포넌트에 직접 전달되지 않는다.
-  {
-    id: 1,
-    name: 'koreanzombie',
-    image: 'data:image/jpeg;base64,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',
-    rating: 5
-  },
-  {
-    id: 2,
-    name: 'covington',
-    image: 'https://blog.kakaocdn.net/dn/b95Akd/btqDwEslYRP/Xzgqayb8tF8Uh7EgcEFUVK/img.png',
-    rating: 6
-  },
-  {
-    id: 3,
-    name: 'usman',
-    image: 'https://dmxg5wxfqgb4u.cloudfront.net/styles/inline/s3/2021-07/gettyimages-1314280580-594x594%20%282%29.jpg?itok=t2NC8FXM',
-    rating: 10
+class App extends React.Component {
+  state = {
+    isLoading: true,
+    movies: [],
+  };
+  getMovies = async () => {
+    const {
+      data: {
+        data: { movies }
+      },
+    } = await axios.get('https://yts-proxy.now.sh/list_movies.json?sort_by=rating')
+    console.log(movies)
+    console.log(this.state.isLoading)
+    // this.setState({ movies: movies })
+    this.setState({ movies, isLoading: false })
+    console.log(this.state.isLoading)
   }
-]
+  componentDidMount() {
+    this.getMovies()
+  }
 
-function rendering(obj) {
-  //const rendering=(obj) => {return <Food name={obj.name} img={obj.image}/>}
-  return <Food name={obj.name} img={obj.image} />
+  render() {
+    const { isLoading, movies } = this.state;
+    return <section className="container">{isLoading ? (<div className="loader"><span className="loader__text">'Loading...'</span>
+    </div>) : (<div className="movies">{movies.map(movie => {
+      console.log(movie);
+      return (<Movie
+        id={movie.id}
+        year={movie.year}
+        title={movie.title}
+        summary={movie.summary}
+        poster={movie.medium_cover_image}
+        key={movie.id}
+        genres={movie.genres}
+      />
+      )
+    })}
+    </ div>
+    )}
+    </section>
+
+  }
 }
-
-function App() {
-  // return <div className="App" />;
-  console.log(FighterILike.map(rendering))
-  return (
-    <div>
-      <h1>"이현걸입니다."</h1>
-      <h2>토스뱅크 입사를 희망합니다.</h2>
-      {/* <Food name={FighterILike.map(obj => obj.name)} /> */}
-      {FighterILike.map(obj => <Food name={obj.name} picture={obj.image} rating={obj.rating} key={obj.id} />)}
-      {/* {FighterILike.map(rendering)} */}
-    </div>
-  )
-}
-Food.propTypes = {
-  name: PropTypes.string.isRequired,
-  picture: PropTypes.string.isRequired,
-  rating: PropTypes.number.isRequired,
-  //isRequired는 꼭필요한 props라는 뜻인데 지우는 건 선택사항이다. 
-};
-
 export default App;
