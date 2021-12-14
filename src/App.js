@@ -1,50 +1,19 @@
-// import { current } from 'immer';
 import React from 'react';
-import axios from 'axios' //axios를 활용한 API 호출
-import Movie from './Movie'
-import './app.css'
+// import Home from './routes/Home';
+import './app.css';
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import About from './routes/About';
+import Home from './routes/Home';
 
-class App extends React.Component {
-  state = {
-    isLoading: true,
-    movies: [],
-  };
-  getMovies = async () => {
-    const {
-      data: {
-        data: { movies }
-      },
-    } = await axios.get('https://yts-proxy.now.sh/list_movies.json?sort_by=rating')
-    console.log(movies)
-    console.log(this.state.isLoading)
-    // this.setState({ movies: movies })
-    this.setState({ movies, isLoading: false })
-    console.log(this.state.isLoading)
-  }
-  componentDidMount() {
-    this.getMovies()
-  }
-
-  render() {
-    const { isLoading, movies } = this.state;
-    return <section className="container">{isLoading ? (<div className="loader"><span className="loader__text">'Loading...'</span>
-    </div>) : (<div className="movies">{movies.map(movie => {
-      console.log(movie);
-      return (<Movie
-        id={movie.id}
-        year={movie.year}
-        title={movie.title}
-        summary={movie.summary}
-        poster={movie.medium_cover_image}
-        key={movie.id}
-        genres={movie.genres}
-      />
-      )
-    })}
-    </ div>
-    )}
-    </section>
-
-  }
+function App() {
+  return (
+    <div>
+      <Router>
+        <Route exact={true} path='/about' component={About} />
+        <Route exact={true} path='/home' component={Home} />
+      </Router>
+    </div >
+  )
 }
-export default App;
+
+export default App
